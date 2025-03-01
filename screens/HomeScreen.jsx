@@ -315,6 +315,21 @@ const HomeScreen = () => {
     setEditingTransactionId(null);
   };
 
+  const getIconColor = (type) => {
+    switch (type) {
+      case 'income':
+        return '#00E676'; // Brighter green
+      case 'expense':
+        return '#FF5252'; // Brighter red
+      case 'savings':
+        return '#448AFF'; // Brighter blue
+      case 'investment':
+        return '#AA00FF'; // Brighter purple
+      default:
+        return theme.text || '#1f2937';
+    }
+  };
+
   const getTransactionColor = (type) => {
     switch (type) {
       case 'income':
@@ -376,26 +391,26 @@ const HomeScreen = () => {
       <View style={styles.distributionContainer}>
         <Text style={[styles.distributionTitle, { color: theme.text }]}>Distribution</Text>
         <View style={styles.distributionBar}>
-          <View style={[styles.distributionSegment, { width: `${incomeWidth}%`, backgroundColor: '#10b981' }]} />
-          <View style={[styles.distributionSegment, { width: `${expenseWidth}%`, backgroundColor: '#ef4444' }]} />
-          <View style={[styles.distributionSegment, { width: `${savingsWidth}%`, backgroundColor: '#1e40af' }]} />
-          <View style={[styles.distributionSegment, { width: `${investmentWidth}%`, backgroundColor: '#8e44ad' }]} />
+          <View style={[styles.distributionSegment, { width: `${incomeWidth}%`, backgroundColor: '#00E676' }]} />
+          <View style={[styles.distributionSegment, { width: `${expenseWidth}%`, backgroundColor: '#FF5252' }]} />
+          <View style={[styles.distributionSegment, { width: `${savingsWidth}%`, backgroundColor: '#448AFF' }]} />
+          <View style={[styles.distributionSegment, { width: `${investmentWidth}%`, backgroundColor: '#AA00FF' }]} />
         </View>
         <View style={styles.distributionLabels}>
           <View style={styles.distributionLabel}>
-            <View style={[styles.labelDot, { backgroundColor: '#10b981' }]} />
+            <View style={[styles.labelDot, { backgroundColor: '#00E676' }]} />
             <Text style={[styles.labelText, { color: theme.text }]}>Income</Text>
           </View>
           <View style={styles.distributionLabel}>
-            <View style={[styles.labelDot, { backgroundColor: '#ef4444' }]} />
+            <View style={[styles.labelDot, { backgroundColor: '#FF5252' }]} />
             <Text style={[styles.labelText, { color: theme.text }]}>Expense</Text>
           </View>
           <View style={styles.distributionLabel}>
-            <View style={[styles.labelDot, { backgroundColor: '#1e40af' }]} />
+            <View style={[styles.labelDot, { backgroundColor: '#448AFF' }]} />
             <Text style={[styles.labelText, { color: theme.text }]}>Savings</Text>
           </View>
           <View style={styles.distributionLabel}>
-            <View style={[styles.labelDot, { backgroundColor: '#8e44ad' }]} />
+            <View style={[styles.labelDot, { backgroundColor: '#AA00FF' }]} />
             <Text style={[styles.labelText, { color: theme.text }]}>Investment</Text>
           </View>
         </View>
@@ -449,7 +464,7 @@ const HomeScreen = () => {
       data.push({
         name: `Income ${percentage}%`,
         population: transactionStats.income,
-        color: '#10b981', // Green
+        color: '#00E676', // Brighter green
         legendFontColor: theme.text,
         legendFontSize: 12
       });
@@ -460,7 +475,7 @@ const HomeScreen = () => {
       data.push({
         name: `Expense ${percentage}%`,
         population: transactionStats.expense,
-        color: '#ef4444', // Red
+        color: '#FF5252', // Brighter red
         legendFontColor: theme.text,
         legendFontSize: 12
       });
@@ -471,7 +486,7 @@ const HomeScreen = () => {
       data.push({
         name: `Savings ${percentage}%`,
         population: transactionStats.savings,
-        color: '#1e40af', // Dark Blue
+        color: '#448AFF', // Brighter blue
         legendFontColor: theme.text,
         legendFontSize: 12
       });
@@ -482,7 +497,7 @@ const HomeScreen = () => {
       data.push({
         name: `Investment ${percentage}%`,
         population: transactionStats.investment,
-        color: '#8e44ad', // Purple
+        color: '#AA00FF', // Brighter purple
         legendFontColor: theme.text,
         legendFontSize: 12
       });
@@ -556,74 +571,149 @@ const HomeScreen = () => {
         <View style={styles.mainContainer}>
           <Header title="KUBERAX" />
           
-          <View style={styles.headerTop}>
-            <Text style={[styles.welcomeText, { color: theme.text }]}>
+          <View style={[styles.headerTop, { 
+            backgroundColor: theme.primary, 
+            marginHorizontal: -15,
+            marginTop: -10,
+            paddingHorizontal: 20,
+            paddingVertical: 15,
+            borderRadius: 0,
+            marginBottom: 20
+          }]}>
+            <Text style={[styles.welcomeText, { color: '#ffffff', fontSize: 22 }]}>
               Welcome, {userData?.name || 'User'}!
             </Text>
             <View style={styles.headerButtons}>
               <TouchableOpacity
-                style={styles.headerButton}
+                style={[styles.headerButton, { backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 10, padding: 8 }]}
                 onPress={toggleTheme}
               >
                 <MaterialCommunityIcons
                   name={isDarkMode ? "weather-sunny" : "weather-night"}
                   size={28}
-                  color={theme.text}
+                  color="#ffffff"
                 />
-                <Text style={[styles.iconText, { color: theme.text }]}>Theme</Text>
+                <Text style={[styles.iconText, { color: '#ffffff' }]}>Theme</Text>
               </TouchableOpacity>
               
               <TouchableOpacity
-                style={styles.headerButton}
+                style={[styles.headerButton, { backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 10, padding: 8 }]}
                 onPress={() => setShowCurrencyConverter(true)}
               >
                 <MaterialCommunityIcons
                   name="currency-exchange"
                   size={28}
-                  color={theme.text}
+                  color="#ffffff"
                 />
-                <Text style={[styles.iconText, { color: theme.text }]}>Currency</Text>
+                <Text style={[styles.iconText, { color: '#ffffff' }]}>Currency</Text>
               </TouchableOpacity>
               
               <TouchableOpacity
-                style={styles.headerButton}
+                style={[styles.headerButton, { backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 10, padding: 8 }]}
                 onPress={() => navigation.navigate('StockMarket')}
               >
                 <MaterialCommunityIcons
                   name="chart-line"
                   size={28}
-                  color={theme.text}
+                  color="#ffffff"
                 />
-                <Text style={[styles.iconText, { color: theme.text }]}>Stocks</Text>
+                <Text style={[styles.iconText, { color: '#ffffff' }]}>Stocks</Text>
               </TouchableOpacity>
               
               <TouchableOpacity
-                style={styles.headerButton}
+                style={[styles.headerButton, { backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 10, padding: 8 }]}
                 onPress={() => setShowVisualization(true)}
               >
                 <MaterialCommunityIcons
                   name="chart-pie"
                   size={28}
-                  color={theme.text}
+                  color="#ffffff"
                 />
-                <Text style={[styles.iconText, { color: theme.text }]}>Charts</Text>
+                <Text style={[styles.iconText, { color: '#ffffff' }]}>Charts</Text>
               </TouchableOpacity>
             </View>
           </View>
-          
-          <View style={[styles.balanceCard, { backgroundColor: theme.primary }]}>
+
+          <TouchableOpacity
+            style={[styles.addButton, { 
+              backgroundColor: theme.primary,
+              marginBottom: 20,
+              borderRadius: 15,
+              height: 60,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 4.65,
+              elevation: 8,
+            }]}
+            onPress={() => setShowAddTransaction(true)}
+          >
+            <MaterialCommunityIcons name="plus-circle" size={32} color="#ffffff" />
+            <Text style={[styles.addButtonText, { fontSize: 18, fontWeight: 'bold' }]}>ADD NEW TRANSACTION</Text>
+          </TouchableOpacity>
+
+          <View style={[styles.balanceCard, { 
+            backgroundColor: theme.primary,
+            borderRadius: 20,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4.65,
+            elevation: 8,
+          }]}>
             <Text style={[styles.balanceLabel, { color: '#ffffff' }]}>
               Total Balance
             </Text>
-            <Text style={[styles.balanceAmount, { color: '#ffffff' }]}>
+            <Text style={[styles.balanceAmount, { color: '#ffffff', fontSize: 36 }]}>
               {userData.currency || '$'} {transactionStats.total.toFixed(2)}
             </Text>
           </View>
           
-          {renderDistributionBar()}
-          
+          <View style={[styles.distributionContainer, {
+            backgroundColor: theme.card,
+            padding: 15,
+            borderRadius: 15,
+            marginBottom: 20,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 3,
+            elevation: 4,
+          }]}>
+            <Text style={[styles.distributionTitle, { color: theme.text, fontSize: 20, marginBottom: 15 }]}>
+              Distribution Chart
+            </Text>
+            
+            {renderDistributionBar()}
+            
+            <View style={[styles.distributionValues, {
+              marginTop: 15,
+              padding: 15,
+              backgroundColor: theme.background,
+              borderRadius: 10,
+            }]}>
+              <Text style={[styles.distributionValueText, { color: theme.text }]}>
+                Income: {userData.currency}{transactionStats.income.toFixed(2)} ({((transactionStats.income / (transactionStats.total || 1)) * 100).toFixed(1)}%)
+              </Text>
+              <Text style={[styles.distributionValueText, { color: theme.text }]}>
+                Expense: {userData.currency}{transactionStats.expense.toFixed(2)} ({((transactionStats.expense / (transactionStats.total || 1)) * 100).toFixed(1)}%)
+              </Text>
+              <Text style={[styles.distributionValueText, { color: theme.text }]}>
+                Savings: {userData.currency}{transactionStats.savings.toFixed(2)} ({((transactionStats.savings / (transactionStats.total || 1)) * 100).toFixed(1)}%)
+              </Text>
+              <Text style={[styles.distributionValueText, { color: theme.text }]}>
+                Investment: {userData.currency}{transactionStats.investment.toFixed(2)} ({((transactionStats.investment / (transactionStats.total || 1)) * 100).toFixed(1)}%)
+              </Text>
+            </View>
+          </View>
+
           <View style={styles.recentTransactions}>
-            <View style={styles.sectionHeader}>
+            <View style={[styles.sectionHeader, { 
+              backgroundColor: theme.card,
+              padding: 15,
+              borderRadius: 15,
+              marginBottom: 15
+            }]}>
               <Text style={[styles.sectionTitle, { color: theme.text }]}>
                 Recent Transactions
               </Text>
@@ -662,7 +752,7 @@ const HomeScreen = () => {
                         transaction.type === 'investment' ? 'chart-pie' : 'bank'
                       } 
                       size={24} 
-                      color={getTransactionColor(transaction.type)} 
+                      color={getIconColor(transaction.type)} 
                     />
                   </View>
                   <View style={styles.transactionDetails}>
@@ -676,70 +766,69 @@ const HomeScreen = () => {
                   </View>
                   <Text style={[
                     styles.transactionAmount, 
-                    { color: getTransactionColor(transaction.type) }
+                    { color: getIconColor(transaction.type) }
                   ]}>
                     {transaction.type === 'expense' ? '-' : '+'}{userData.currency || '$'}{transaction.amount}
                   </Text>
                 </View>
               ))
             )}
-            
-            <TouchableOpacity 
-              style={[styles.addButton, { backgroundColor: theme.primary }]}
-              onPress={() => setShowAddTransaction(true)}
-            >
-              <MaterialCommunityIcons name="plus" size={24} color="#ffffff" />
-              <Text style={styles.addButtonText}>Add Transaction</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
       
-      {/* Currency Converter Modal */}
       <CurrencyConverter 
         visible={showCurrencyConverter} 
         onClose={() => setShowCurrencyConverter(false)} 
       />
 
-      {/* Visualization Modal */}
       <Modal
         visible={showVisualization}
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         onRequestClose={() => setShowVisualization(false)}
       >
-        <View style={[styles.modalOverlay, { backgroundColor: 'rgba(0,0,0,0.5)' }]}>
+        <View style={styles.modalOverlay}>
           <View style={[
             styles.modalContent, 
             { 
               backgroundColor: theme.card,
-              maxHeight: '90%',
-              marginTop: 'auto'
+              padding: 0,
+              overflow: 'hidden',
             }
           ]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: theme.text }]}>
+            <View style={[styles.modalHeader, {
+              backgroundColor: theme.primary,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              paddingVertical: 15,
+            }]}>
+              <Text style={[styles.modalTitle, { color: '#ffffff', fontSize: 24 }]}>
                 Transaction Visualization
               </Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setShowVisualization(false)}
-                style={styles.closeButton}
+                style={[styles.closeButton, {
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  padding: 8,
+                  borderRadius: 20
+                }]}
               >
                 <MaterialCommunityIcons
                   name="close"
-                  size={24}
-                  color={theme.text}
+                  size={28}
+                  color="#ffffff"
                 />
               </TouchableOpacity>
             </View>
 
             <ScrollView 
-              style={{ flex: 1 }} 
+              style={{ flex: 1, backgroundColor: theme.background }} 
               showsVerticalScrollIndicator={true}
-              contentContainerStyle={{ paddingBottom: 20 }}
+              contentContainerStyle={{ paddingBottom: 20, paddingHorizontal: 15, paddingTop: 15 }}
             >
-              <View style={styles.chartSection}>
-                <Text style={[styles.chartTitle, { color: theme.text }]}>
+              <View style={[styles.chartSection, { backgroundColor: theme.card, padding: 15, borderRadius: 15, marginBottom: 20 }]}>
+                <Text style={[styles.chartTitle, { color: theme.text, fontSize: 22 }]}>
                   Transaction Type Distribution
                 </Text>
                 {transactions.length === 0 ? (
@@ -747,7 +836,7 @@ const HomeScreen = () => {
                     No transactions to visualize
                   </Text>
                 ) : (
-                  <View style={styles.chartContainer}>
+                  <View style={[styles.chartContainer, { marginVertical: 20 }]}>
                     <PieChart
                       data={generatePieChartData()}
                       width={width - 40}
@@ -757,6 +846,7 @@ const HomeScreen = () => {
                         backgroundGradientFrom: theme.card,
                         backgroundGradientTo: theme.card,
                         color: (opacity = 1) => `rgba(${theme.text === '#ffffff' ? '255, 255, 255' : '0, 0, 0'}, ${opacity})`,
+                        labelColor: (opacity = 1) => theme.text,
                       }}
                       accessor="population"
                       backgroundColor="transparent"
@@ -767,8 +857,8 @@ const HomeScreen = () => {
                 )}
               </View>
 
-              <View style={styles.chartSection}>
-                <Text style={[styles.chartTitle, { color: theme.text }]}>
+              <View style={[styles.chartSection, { backgroundColor: theme.card, padding: 15, borderRadius: 15, marginBottom: 20 }]}>
+                <Text style={[styles.chartTitle, { color: theme.text, fontSize: 22 }]}>
                   Top Categories
                 </Text>
                 {transactions.length === 0 ? (
@@ -776,7 +866,7 @@ const HomeScreen = () => {
                     No transactions to visualize
                   </Text>
                 ) : (
-                  <View style={styles.chartContainer}>
+                  <View style={[styles.chartContainer, { marginVertical: 20 }]}>
                     <PieChart
                       data={generateCategoryPieChartData()}
                       width={width - 40}
@@ -786,6 +876,7 @@ const HomeScreen = () => {
                         backgroundGradientFrom: theme.card,
                         backgroundGradientTo: theme.card,
                         color: (opacity = 1) => `rgba(${theme.text === '#ffffff' ? '255, 255, 255' : '0, 0, 0'}, ${opacity})`,
+                        labelColor: (opacity = 1) => theme.text,
                       }}
                       accessor="population"
                       backgroundColor="transparent"
@@ -796,24 +887,24 @@ const HomeScreen = () => {
                 )}
               </View>
 
-              <View style={styles.chartLegend}>
-                <Text style={[styles.chartTitle, { color: theme.text }]}>
+              <View style={[styles.chartLegend, { backgroundColor: theme.card, padding: 15, borderRadius: 15 }]}>
+                <Text style={[styles.chartTitle, { color: theme.text, fontSize: 22 }]}>
                   Legend
                 </Text>
                 <View style={styles.legendItem}>
-                  <View style={[styles.legendDot, { backgroundColor: '#10b981' }]} />
+                  <View style={[styles.legendDot, { backgroundColor: '#00E676' }]} />
                   <Text style={[styles.legendText, { color: theme.text }]}>Income</Text>
                 </View>
                 <View style={styles.legendItem}>
-                  <View style={[styles.legendDot, { backgroundColor: '#ef4444' }]} />
+                  <View style={[styles.legendDot, { backgroundColor: '#FF5252' }]} />
                   <Text style={[styles.legendText, { color: theme.text }]}>Expense</Text>
                 </View>
                 <View style={styles.legendItem}>
-                  <View style={[styles.legendDot, { backgroundColor: '#1e40af' }]} />
+                  <View style={[styles.legendDot, { backgroundColor: '#448AFF' }]} />
                   <Text style={[styles.legendText, { color: theme.text }]}>Savings</Text>
                 </View>
                 <View style={styles.legendItem}>
-                  <View style={[styles.legendDot, { backgroundColor: '#8e44ad' }]} />
+                  <View style={[styles.legendDot, { backgroundColor: '#AA00FF' }]} />
                   <Text style={[styles.legendText, { color: theme.text }]}>Investment</Text>
                 </View>
               </View>
@@ -822,10 +913,9 @@ const HomeScreen = () => {
         </View>
       </Modal>
 
-      {/* Add Transaction Modal - FIXED */}
       <Modal
         visible={showAddTransaction}
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         onRequestClose={() => {
           setShowAddTransaction(false);
@@ -836,30 +926,25 @@ const HomeScreen = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
         >
-          <View style={[styles.modalOverlay, { backgroundColor: 'rgba(0,0,0,0.9)' }]}>
+          <View style={styles.modalOverlay}>
             <View style={[
               styles.modalContent, 
               { 
                 backgroundColor: theme.card,
-                maxHeight: '90%', // Reduced from 95% to ensure it fits on screen
-                marginTop: 'auto',
-                borderTopLeftRadius: 25,
-                borderTopRightRadius: 25,
-                paddingBottom: Platform.OS === 'ios' ? 40 : 20
+                padding: 0,
+                overflow: 'hidden',
               }
             ]}>
               <View style={[styles.modalHeader, { 
-                borderBottomWidth: 1, 
-                borderBottomColor: theme.border,
-                paddingVertical: 15,
                 backgroundColor: theme.primary,
-                borderTopLeftRadius: 25,
-                borderTopRightRadius: 25,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                paddingVertical: 15,
               }]}>
                 <Text style={[styles.modalTitle, { color: '#ffffff', fontSize: 24 }]}>
                   {editingTransactionId ? 'Edit Transaction' : 'Add Transaction'}
                 </Text>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => {
                     setShowAddTransaction(false);
                     resetTransactionForm();
@@ -879,11 +964,11 @@ const HomeScreen = () => {
               </View>
 
               <ScrollView 
-                style={{ flex: 1 }} 
+                style={{ flex: 1, backgroundColor: theme.background }} 
                 showsVerticalScrollIndicator={true}
                 contentContainerStyle={{ paddingBottom: 20, paddingHorizontal: 15, paddingTop: 15 }}
               >
-                <View style={[styles.formSection, { marginTop: 10 }]}>
+                <View style={[styles.formSection, { marginTop: 10, backgroundColor: theme.card, padding: 15, borderRadius: 15 }]}>
                   <Text style={[styles.formLabel, { color: theme.text, fontSize: 20 }]}>
                     Amount
                   </Text>
@@ -905,20 +990,19 @@ const HomeScreen = () => {
                   />
                 </View>
 
-                <View style={styles.formSection}>
-                  <Text style={[styles.sectionTitle, { color: theme.text, marginBottom: 15, fontSize: 20 }]}>
+                <View style={[styles.formSection, { marginTop: 20, backgroundColor: theme.card, padding: 15, borderRadius: 15 }]}>
+                  <Text style={[styles.sectionTitle, { color: theme.text, marginBottom: 15, fontSize: 22, fontWeight: 'bold' }]}>
                     Select Transaction Type
                   </Text>
-                  <View style={styles.typeSelector}>
-                    {/* Income Button */}
+                  <View style={[styles.typeSelector, { marginTop: 10 }]}>
                     <TouchableOpacity
                       style={[
                         styles.typeButton,
                         {
-                          backgroundColor: transactionType === 'income' ? '#10b981' : 'rgba(16, 185, 129, 0.2)',
+                          backgroundColor: transactionType === 'income' ? '#00E676' : 'rgba(0, 230, 118, 0.2)',
                           borderWidth: transactionType === 'income' ? 0 : 1,
-                          borderColor: '#10b981',
-                          height: 70,
+                          borderColor: '#00E676',
+                          height: 100,
                           width: '48%'
                         }
                       ]}
@@ -926,26 +1010,25 @@ const HomeScreen = () => {
                     >
                       <MaterialCommunityIcons 
                         name="arrow-down-circle" 
-                        size={28} 
-                        color={transactionType === 'income' ? '#ffffff' : '#10b981'} 
+                        size={40} 
+                        color={transactionType === 'income' ? '#ffffff' : '#00E676'} 
                       />
                       <Text style={[
                         styles.typeButtonText, 
-                        { color: transactionType === 'income' ? '#ffffff' : '#10b981', fontSize: 16 }
+                        { color: transactionType === 'income' ? '#ffffff' : '#00E676', fontSize: 18, fontWeight: 'bold', marginTop: 8 }
                       ]}>
                         Income
                       </Text>
                     </TouchableOpacity>
 
-                    {/* Expense Button */}
                     <TouchableOpacity
                       style={[
                         styles.typeButton,
                         {
-                          backgroundColor: transactionType === 'expense' ? '#ef4444' : 'rgba(239, 68, 68, 0.2)',
+                          backgroundColor: transactionType === 'expense' ? '#FF5252' : 'rgba(255, 82, 82, 0.2)',
                           borderWidth: transactionType === 'expense' ? 0 : 1,
-                          borderColor: '#ef4444',
-                          height: 70,
+                          borderColor: '#FF5252',
+                          height: 100,
                           width: '48%'
                         }
                       ]}
@@ -953,68 +1036,66 @@ const HomeScreen = () => {
                     >
                       <MaterialCommunityIcons 
                         name="arrow-up-circle" 
-                        size={28} 
-                        color={transactionType === 'expense' ? '#ffffff' : '#ef4444'} 
+                        size={40} 
+                        color={transactionType === 'expense' ? '#ffffff' : '#FF5252'} 
                       />
                       <Text style={[
                         styles.typeButtonText, 
-                        { color: transactionType === 'expense' ? '#ffffff' : '#ef4444', fontSize: 16 }
+                        { color: transactionType === 'expense' ? '#ffffff' : '#FF5252', fontSize: 18, fontWeight: 'bold', marginTop: 8 }
                       ]}>
                         Expense
                       </Text>
                     </TouchableOpacity>
 
-                    {/* Savings Button */}
                     <TouchableOpacity
                       style={[
                         styles.typeButton,
                         {
-                          backgroundColor: transactionType === 'savings' ? '#1e40af' : 'rgba(30, 64, 175, 0.2)',
+                          backgroundColor: transactionType === 'savings' ? '#448AFF' : 'rgba(68, 138, 255, 0.2)',
                           borderWidth: transactionType === 'savings' ? 0 : 1,
-                          borderColor: '#1e40af',
-                          height: 70,
+                          borderColor: '#448AFF',
+                          height: 100,
                           width: '48%',
-                          marginTop: 10
+                          marginTop: 15
                         }
                       ]}
                       onPress={() => handleTransactionTypeSelect('savings')}
                     >
                       <MaterialCommunityIcons 
                         name="bank" 
-                        size={28} 
-                        color={transactionType === 'savings' ? '#ffffff' : '#1e40af'} 
+                        size={40} 
+                        color={transactionType === 'savings' ? '#ffffff' : '#448AFF'} 
                       />
                       <Text style={[
                         styles.typeButtonText, 
-                        { color: transactionType === 'savings' ? '#ffffff' : '#1e40af', fontSize: 16 }
+                        { color: transactionType === 'savings' ? '#ffffff' : '#448AFF', fontSize: 18, fontWeight: 'bold', marginTop: 8 }
                       ]}>
                         Savings
                       </Text>
                     </TouchableOpacity>
 
-                    {/* Investment Button */}
                     <TouchableOpacity
                       style={[
                         styles.typeButton,
                         {
-                          backgroundColor: transactionType === 'investment' ? '#8e44ad' : 'rgba(142, 68, 173, 0.2)',
+                          backgroundColor: transactionType === 'investment' ? '#AA00FF' : 'rgba(170, 0, 255, 0.2)',
                           borderWidth: transactionType === 'investment' ? 0 : 1,
-                          borderColor: '#8e44ad',
-                          height: 70,
+                          borderColor: '#AA00FF',
+                          height: 100,
                           width: '48%',
-                          marginTop: 10
+                          marginTop: 15
                         }
                       ]}
                       onPress={() => handleTransactionTypeSelect('investment')}
                     >
                       <MaterialCommunityIcons 
                         name="chart-pie" 
-                        size={28} 
-                        color={transactionType === 'investment' ? '#ffffff' : '#8e44ad'} 
+                        size={40} 
+                        color={transactionType === 'investment' ? '#ffffff' : '#AA00FF'} 
                       />
                       <Text style={[
                         styles.typeButtonText, 
-                        { color: transactionType === 'investment' ? '#ffffff' : '#8e44ad', fontSize: 16 }
+                        { color: transactionType === 'investment' ? '#ffffff' : '#AA00FF', fontSize: 18, fontWeight: 'bold', marginTop: 8 }
                       ]}>
                         Investment
                       </Text>
@@ -1023,11 +1104,15 @@ const HomeScreen = () => {
                 </View>
 
                 {transactionType && (
-                  <View style={styles.formSection}>
+                  <View style={[styles.formSection, { backgroundColor: theme.card, padding: 15, borderRadius: 15 }]}>
                     <Text style={[styles.sectionTitle, { color: theme.text, marginBottom: 15, fontSize: 20 }]}>
                       Select Category
                     </Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 15 }}>
+                    <ScrollView 
+                      horizontal 
+                      showsHorizontalScrollIndicator={true}
+                      contentContainerStyle={{ paddingBottom: 10 }}
+                    >
                       <View style={styles.categoryGrid}>
                         {Object.keys(transactionCategories[transactionType.toLowerCase()] || {}).map((category) => (
                           <TouchableOpacity
@@ -1036,9 +1121,9 @@ const HomeScreen = () => {
                               styles.categoryCard,
                               {
                                 backgroundColor: selectedMainCategory === category 
-                                  ? getTransactionColor(transactionType) 
+                                  ? getIconColor(transactionType) 
                                   : theme.background,
-                                borderColor: getTransactionColor(transactionType),
+                                borderColor: getIconColor(transactionType),
                                 borderWidth: 2,
                                 marginRight: 15,
                                 minWidth: 150,
@@ -1065,7 +1150,7 @@ const HomeScreen = () => {
                 )}
 
                 {selectedMainCategory && (
-                  <View style={styles.formSection}>
+                  <View style={[styles.formSection, { backgroundColor: theme.card, padding: 15, borderRadius: 15 }]}>
                     <Text style={[styles.sectionTitle, { color: theme.text, marginBottom: 15, fontSize: 20 }]}>
                       Select Subcategory
                     </Text>
@@ -1078,9 +1163,9 @@ const HomeScreen = () => {
                             styles.subCategoryCard,
                             {
                               backgroundColor: selectedSubCategory === subCategory 
-                                ? getTransactionColor(transactionType) 
+                                ? getIconColor(transactionType) 
                                 : theme.background,
-                              borderColor: getTransactionColor(transactionType),
+                              borderColor: getIconColor(transactionType),
                               borderWidth: 2,
                               height: 55
                             }
@@ -1103,7 +1188,7 @@ const HomeScreen = () => {
                   </View>
                 )}
 
-                <View style={styles.actionButtons}>
+                <View style={[styles.actionButtons, { marginTop: 20 }]}>
                   <TouchableOpacity
                     style={[
                       styles.actionButton,
@@ -1156,7 +1241,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
+    flexWrap: 'wrap',
     paddingHorizontal: 5,
   },
   headerButtons: {
@@ -1164,12 +1249,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     flexWrap: 'wrap',
-    gap: 15,
+    gap: 10,
+    marginTop: 10,
   },
   headerButton: {
     alignItems: 'center',
     justifyContent: 'center',
     width: 70,
+    marginBottom: 5,
   },
   welcomeText: {
     fontSize: 20,
@@ -1199,7 +1286,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   distributionBar: {
-    height: 20,
+    height: 25,
     flexDirection: 'row',
     borderRadius: 10,
     overflow: 'hidden',
@@ -1212,21 +1299,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    marginTop: 10,
   },
   distributionLabel: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 8,
     width: '48%',
   },
   labelDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginRight: 5,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
   },
   labelText: {
     fontSize: 14,
+    fontWeight: '500',
+  },
+  distributionValues: {
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    borderRadius: 10,
+  },
+  distributionValueText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
   recentTransactions: {
     marginBottom: 20,
@@ -1288,15 +1388,17 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.9)',
   },
   modalContent: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
+    width: '95%',
+    borderRadius: 20,
+    maxHeight: '95%',
     elevation: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: -3 },
+    shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
   },
@@ -1342,11 +1444,11 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 15,
     alignItems: 'center',
-    elevation: 5,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.4,
-    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
     flexDirection: 'column',
     justifyContent: 'center',
     gap: 8,
@@ -1466,17 +1568,6 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 16,
-  },
-  distributionValues: {
-    marginTop: 15,
-    padding: 10,
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 10,
-  },
-  distributionValueText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 5,
   },
 });
 

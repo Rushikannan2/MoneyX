@@ -18,7 +18,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 import LottieView from 'lottie-react-native';
@@ -68,6 +68,7 @@ const HomeScreen = () => {
   const [showAddTransaction, setShowAddTransaction] = useState(false);
   const [showVisualization, setShowVisualization] = useState(false);
   const [transactions, setTransactions] = useState([]);
+  const [showAllTransactions, setShowAllTransactions] = useState(false);
   const [transactionAmount, setTransactionAmount] = useState('');
   const [transactionType, setTransactionType] = useState('');
   const [selectedMainCategory, setSelectedMainCategory] = useState('');
@@ -457,9 +458,13 @@ const HomeScreen = () => {
   // Function to generate pie chart data
   const generatePieChartData = () => {
     if (transactions.length === 0) {
-      return [
-        { name: 'No Data', population: 1, color: theme.primary, legendFontColor: theme.text, legendFontSize: 12 }
-      ];
+      return [{
+        name: 'No Data',
+        population: 1,
+        color: isDarkMode ? '#4a4a4a' : '#e0e0e0',
+        legendFontColor: isDarkMode ? '#ffffff' : '#000000',
+        legendFontSize: 16
+      }];
     }
 
     const totalTransactions = Math.abs(transactionStats.income) + 
@@ -468,9 +473,13 @@ const HomeScreen = () => {
                             Math.abs(transactionStats.investment);
                             
     if (totalTransactions === 0) {
-      return [
-        { name: 'No Data', population: 1, color: theme.primary, legendFontColor: theme.text, legendFontSize: 12 }
-      ];
+      return [{
+        name: 'No Data',
+        population: 1,
+        color: isDarkMode ? '#4a4a4a' : '#e0e0e0',
+        legendFontColor: isDarkMode ? '#ffffff' : '#000000',
+        legendFontSize: 16
+      }];
     }
     
     const data = [];
@@ -480,9 +489,9 @@ const HomeScreen = () => {
       data.push({
         name: `Income`,
         population: Math.abs(transactionStats.income),
-        color: '#00E676',
-        legendFontColor: theme.text,
-        legendFontSize: 12,
+        color: isDarkMode ? '#81C784' : '#388E3C',
+        legendFontColor: isDarkMode ? '#ffffff' : '#000000',
+        legendFontSize: 16,
         percentage: percentage,
         amount: transactionStats.income
       });
@@ -493,9 +502,9 @@ const HomeScreen = () => {
       data.push({
         name: `Expense`,
         population: Math.abs(transactionStats.expense),
-        color: '#FF5252',
-        legendFontColor: theme.text,
-        legendFontSize: 12,
+        color: isDarkMode ? '#FF6B6B' : '#D32F2F',
+        legendFontColor: isDarkMode ? '#ffffff' : '#000000',
+        legendFontSize: 16,
         percentage: percentage,
         amount: transactionStats.expense
       });
@@ -506,9 +515,9 @@ const HomeScreen = () => {
       data.push({
         name: `Savings`,
         population: Math.abs(transactionStats.savings),
-        color: '#FFC107',
-        legendFontColor: theme.text,
-        legendFontSize: 12,
+        color: isDarkMode ? '#F06292' : '#C2185B',
+        legendFontColor: isDarkMode ? '#ffffff' : '#000000',
+        legendFontSize: 16,
         percentage: percentage,
         amount: transactionStats.savings
       });
@@ -519,9 +528,9 @@ const HomeScreen = () => {
       data.push({
         name: `Investment`,
         population: Math.abs(transactionStats.investment),
-        color: '#2196F3',
-        legendFontColor: theme.text,
-        legendFontSize: 12,
+        color: isDarkMode ? '#26A69A' : '#00897B',
+        legendFontColor: isDarkMode ? '#ffffff' : '#000000',
+        legendFontSize: 16,
         percentage: percentage,
         amount: transactionStats.investment
       });
@@ -533,65 +542,100 @@ const HomeScreen = () => {
   // Generate category-based pie chart data
   const generateCategoryPieChartData = () => {
     if (transactions.length === 0) {
-      return [
-        { name: 'No Data', population: 1, color: theme.primary, legendFontColor: theme.text, legendFontSize: 12 }
-      ];
+      return [{
+        name: 'No Data',
+        population: 1,
+        color: isDarkMode ? '#4a4a4a' : '#e0e0e0',
+        legendFontColor: isDarkMode ? '#ffffff' : '#000000',
+        legendFontSize: 14
+      }];
     }
 
     const categoryTotals = {};
-    const categoryColors = {
-      'Bills & Utilities': '#FF5733',
-      'Housing': '#C70039',
-      'Food': '#900C3F',
-      'Transportation': '#581845',
-      'Healthcare': '#2471A3',
-      'Education': '#148F77',
-      'Personal': '#D4AC0D',
-      'Others': '#A6ACAF',
-      'Salary': '#27AE60',
-      'Business': '#2E86C1',
-      'Other Income': '#F39C12',
-      'Emergency Fund': '#3498DB',
-      'Retirement': '#1ABC9C',
-      'Goals': '#F1C40F',
-      'Stocks': '#8E44AD',
-      'Mutual Funds': '#2E86C1',
-      'Real Estate': '#C70039',
-      'Crypto': '#8E44AD',
-      'Commodities': '#581845'
-    };
+    const categoryTypes = {};
     
     transactions.forEach(transaction => {
       if (!categoryTotals[transaction.mainCategory]) {
         categoryTotals[transaction.mainCategory] = 0;
+        categoryTypes[transaction.mainCategory] = transaction.type;
       }
       categoryTotals[transaction.mainCategory] += Math.abs(transaction.amount);
     });
     
     const totalAmount = Object.values(categoryTotals).reduce((sum, amount) => sum + Math.abs(amount), 0);
     
+    const getColorForCategory = (category, type) => {
+      const colors = {
+        expense: {
+          'Bills & Utilities': isDarkMode ? '#FF6B6B' : '#D32F2F',
+          'Housing': isDarkMode ? '#FFB74D' : '#FFA000',
+          'Food': isDarkMode ? '#FFD54F' : '#FBC02D',
+          'Transportation': isDarkMode ? '#64B5F6' : '#1976D2',
+          'Healthcare': isDarkMode ? '#9575CD' : '#7B1FA2',
+          'Education': isDarkMode ? '#4DB6AC' : '#00796B',
+          'Personal': isDarkMode ? '#E57373' : '#C2185B',
+          'Others': isDarkMode ? '#A1887F' : '#5D4037'
+        },
+        income: {
+          'Salary': isDarkMode ? '#81C784' : '#388E3C',
+          'Business': isDarkMode ? '#FF8A65' : '#E64A19',
+          'Other Income': isDarkMode ? '#BA68C8' : '#512DA8'
+        },
+        savings: {
+          'Emergency Fund': isDarkMode ? '#F06292' : '#C2185B',
+          'Retirement': isDarkMode ? '#7986CB' : '#303F9F',
+          'Goals': isDarkMode ? '#DCE775' : '#AFB42B'
+        },
+        investment: {
+          'Stocks': isDarkMode ? '#26A69A' : '#00897B',
+          'Real Estate': isDarkMode ? '#8D6E63' : '#6D4C41',
+          'Crypto': isDarkMode ? '#FF7043' : '#D84315',
+          'Commodities': isDarkMode ? '#BDBDBD' : '#757575'
+        }
+      };
+
+      return colors[type]?.[category] || (isDarkMode ? '#A1887F' : '#5D4037');
+    };
+
     const data = Object.entries(categoryTotals).map(([category, amount]) => {
+      const type = categoryTypes[category];
       const percentage = ((Math.abs(amount) / totalAmount) * 100).toFixed(1);
       return {
         name: category,
+        type: type,
         population: Math.abs(amount),
-        color: categoryColors[category] || '#A4B0BE',
-        legendFontColor: theme.text,
-        legendFontSize: 12,
+        color: getColorForCategory(category, type),
+        legendFontColor: isDarkMode ? '#ffffff' : '#000000',
+        legendFontSize: 14,
         percentage: percentage,
         amount: amount
       };
     });
     
-    return data.sort((a, b) => b.population - a.population).slice(0, 5);
+    return data.sort((a, b) => b.population - a.population);
   };
+
+  const visibleTransactions = showAllTransactions ? transactions : transactions.slice(0, 10);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <Header 
+        userData={userData}
+        theme={theme}
+        isDarkMode={isDarkMode}
+        toggleTheme={toggleTheme}
+      />
+
+      {/* Add Chatbot Icon */}
+      <TouchableOpacity
+        style={[styles.chatbotButton, { backgroundColor: theme.primary }]}
+        onPress={() => navigation.navigate('Chatbot')}
+      >
+        <MaterialIcons name="chat" size={24} color="white" />
+      </TouchableOpacity>
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.mainContainer}>
-          <Header title="KUBERAX" />
-          
           <View style={[styles.imageContainer, {
             backgroundColor: theme.card,
             marginVertical: 15,
@@ -754,80 +798,116 @@ const HomeScreen = () => {
                 No transactions yet
               </Text>
             ) : (
-              transactions.map((transaction, index) => (
-                <View 
-                  key={index} 
-                  style={[styles.transactionItem, { 
-                    backgroundColor: theme.card,
-                    marginBottom: 10,
-                    padding: 15,
-                    borderRadius: 12,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 3,
-                    elevation: 3,
-                  }]}
-                >
-                  <View style={styles.transactionIcon}>
+              <>
+                {visibleTransactions.map((transaction, index) => (
+                  <View 
+                    key={index} 
+                    style={[styles.transactionItem, { 
+                      backgroundColor: theme.card,
+                      marginBottom: 10,
+                      padding: 15,
+                      borderRadius: 12,
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.1,
+                      shadowRadius: 3,
+                      elevation: 3,
+                    }]}
+                  >
+                    <View style={styles.transactionIcon}>
+                      <MaterialCommunityIcons 
+                        name={
+                          transaction.type === 'income' ? 'arrow-down-circle' : 
+                          transaction.type === 'expense' ? 'arrow-up-circle' : 
+                          transaction.type === 'savings' ? 'bank' :
+                          transaction.type === 'investment' ? 'chart-pie' : 'bank'
+                        } 
+                        size={28} 
+                        color={getIconColor(transaction.type)} 
+                      />
+                    </View>
+                    <View style={[styles.transactionDetails, { 
+                      flex: 1,
+                      marginRight: 15,
+                      justifyContent: 'center'
+                    }]}>
+                      <Text style={[styles.transactionCategory, { 
+                        color: theme.text,
+                        fontSize: 14,
+                        fontWeight: '600',
+                        marginBottom: 4,
+                        lineHeight: 20
+                      }]} numberOfLines={2}>
+                        {transaction.mainCategory}
+                        {transaction.subCategory ? ` - ${transaction.subCategory}` : ''}
+                      </Text>
+                      <Text style={[styles.transactionDate, { 
+                        color: theme.subtext,
+                        fontSize: 12
+                      }]} numberOfLines={1}>
+                        {formatDate(transaction.date)} at {formatTime(transaction.date)}
+                      </Text>
+                    </View>
+                    <View style={{ flexDirection: 'column', alignItems: 'flex-end', minWidth: 100 }}>
+                      <Text style={[
+                        styles.transactionAmount, 
+                        { 
+                          color: getIconColor(transaction.type),
+                          fontSize: 15,
+                          fontWeight: 'bold',
+                          marginBottom: 4,
+                          textAlign: 'right'
+                        }
+                      ]}>
+                        {transaction.type === 'expense' ? '-' : '+'}{userData.currency || '$'} {transaction.amount.toFixed(2)}
+                      </Text>
+                    </View>
+                    <View style={styles.transactionActions}>
+                      <TouchableOpacity
+                        onPress={() => handleEditTransaction(transaction)}
+                        style={[styles.actionIcon, { 
+                          backgroundColor: theme.primary,
+                          marginRight: 8
+                        }]}
+                      >
+                        <MaterialCommunityIcons name="pencil" size={16} color="#ffffff" />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => handleDeleteTransaction(transaction.id)}
+                        style={[styles.actionIcon, { backgroundColor: theme.error }]}
+                      >
+                        <MaterialCommunityIcons name="delete" size={16} color="#ffffff" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+                
+                {transactions.length > 10 && (
+                  <TouchableOpacity
+                    style={[styles.viewMoreButton, {
+                      backgroundColor: theme.primary,
+                      padding: 12,
+                      borderRadius: 10,
+                      alignItems: 'center',
+                      marginTop: 10,
+                      marginBottom: 20,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      gap: 8
+                    }]}
+                    onPress={() => setShowAllTransactions(!showAllTransactions)}
+                  >
+                    <Text style={{ color: '#ffffff', fontSize: 16, fontWeight: 'bold' }}>
+                      {showAllTransactions ? 'Show Less' : 'View All Transactions'}
+                    </Text>
                     <MaterialCommunityIcons 
-                      name={
-                        transaction.type === 'income' ? 'arrow-down-circle' : 
-                        transaction.type === 'expense' ? 'arrow-up-circle' : 
-                        transaction.type === 'savings' ? 'bank' :
-                        transaction.type === 'investment' ? 'chart-pie' : 'bank'
-                      } 
-                      size={28} 
-                      color={getIconColor(transaction.type)} 
+                      name={showAllTransactions ? "chevron-up" : "chevron-down"} 
+                      size={20} 
+                      color="#ffffff" 
                     />
-                  </View>
-                  <View style={[styles.transactionDetails, { flex: 1 }]}>
-                    <Text style={[styles.transactionCategory, { 
-                      color: theme.text,
-                      fontSize: 16,
-                      fontWeight: '600',
-                      marginBottom: 4
-                    }]}>
-                      {transaction.mainCategory}
-                      {transaction.subCategory ? ` - ${transaction.subCategory}` : ''}
-                    </Text>
-                    <Text style={[styles.transactionDate, { 
-                      color: theme.subtext,
-                      fontSize: 14
-                    }]}>
-                      {formatDate(transaction.date)} at {formatTime(transaction.date)}
-                    </Text>
-                  </View>
-                  <Text style={[
-                    styles.transactionAmount, 
-                    { 
-                      color: getIconColor(transaction.type),
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      marginRight: 10
-                    }
-                  ]}>
-                    {transaction.type === 'expense' ? '-' : '+'}{userData.currency || '$'} {transaction.amount.toFixed(2)}
-                  </Text>
-                  <View style={styles.transactionActions}>
-                    <TouchableOpacity
-                      onPress={() => handleEditTransaction(transaction)}
-                      style={[styles.actionIcon, { 
-                        backgroundColor: theme.primary,
-                        marginRight: 8
-                      }]}
-                    >
-                      <MaterialCommunityIcons name="pencil" size={16} color="#ffffff" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => handleDeleteTransaction(transaction.id)}
-                      style={[styles.actionIcon, { backgroundColor: theme.error }]}
-                    >
-                      <MaterialCommunityIcons name="delete" size={16} color="#ffffff" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ))
+                  </TouchableOpacity>
+                )}
+              </>
             )}
           </View>
         </View>
@@ -862,48 +942,115 @@ const HomeScreen = () => {
               showsVerticalScrollIndicator={true}
             >
               {/* Transaction Distribution Chart */}
-              <View style={[styles.chartContainer, { backgroundColor: theme.card }]}>
-                <Text style={[styles.chartTitle, { color: theme.text }]}>
+              <View style={[styles.chartContainer, { 
+                backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
+                borderRadius: 12,
+                padding: 16,
+                marginBottom: 16,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                  },
+                  android: {
+                    elevation: 5,
+                  },
+                }),
+              }]}>
+                <Text style={[styles.chartTitle, { 
+                  color: isDarkMode ? '#ffffff' : '#000000',
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  marginBottom: 16,
+                  textAlign: 'center'
+                }]}>
                   Transaction Distribution
                 </Text>
 
                 {transactions.length === 0 ? (
                   <View style={styles.emptyChart}>
-                    <MaterialCommunityIcons name="chart-pie" size={40} color={theme.subtext} />
-                    <Text style={[styles.emptyText, { color: theme.subtext }]}>
+                    <MaterialCommunityIcons 
+                      name="chart-pie" 
+                      size={40} 
+                      color={isDarkMode ? '#4a4a4a' : '#e0e0e0'} 
+                    />
+                    <Text style={[styles.emptyText, { 
+                      color: isDarkMode ? '#ffffff' : '#000000',
+                      marginTop: 8
+                    }]}>
                       No transactions yet
                     </Text>
                   </View>
                 ) : (
                   <>
-                    <View style={styles.chartWrapper}>
+                    <View style={[styles.chartWrapper, { alignItems: 'center' }]}>
                       <PieChart
                         data={generatePieChartData()}
-                        width={width - 48}
-                        height={200}
+                        width={width - 32}
+                        height={180}
                         chartConfig={{
-                          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                          labelColor: (opacity = 1) => theme.text,
+                          color: (opacity = 1) => isDarkMode 
+                            ? `rgba(255, 255, 255, ${opacity})`
+                            : `rgba(0, 0, 0, ${opacity})`,
+                          labelColor: (opacity = 1) => isDarkMode 
+                            ? `rgba(255, 255, 255, ${opacity})`
+                            : `rgba(0, 0, 0, ${opacity})`,
+                          style: {
+                            borderRadius: 16
+                          },
+                          propsForLabels: {
+                            fontSize: 16,
+                            fontWeight: 'bold'
+                          }
                         }}
                         accessor="population"
                         backgroundColor="transparent"
                         paddingLeft="0"
+                        absolute
                         hasLegend={false}
-                        center={[width / 4, 0]}
                       />
                     </View>
 
-                    <View style={styles.legendContainer}>
+                    <View style={[styles.legendContainer, {
+                      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                      borderRadius: 12,
+                      padding: 16,
+                      marginTop: 20
+                    }]}>
                       {generatePieChartData().map((item, index) => (
-                        <View key={index} style={styles.legendRow}>
-                          <View style={styles.legendItem}>
-                            <View style={[styles.legendDot, { backgroundColor: item.color, width: 12, height: 12, borderRadius: 6 }]} />
-                            <Text style={[styles.legendText, { color: theme.text, fontSize: 14, fontWeight: '600' }]} numberOfLines={1}>
+                        <View key={index} style={[styles.legendRow, {
+                          borderBottomWidth: index < generatePieChartData().length - 1 ? 1 : 0,
+                          borderBottomColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                          paddingVertical: 12,
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          gap: 8
+                        }]}>
+                          <View style={[styles.legendItem, { width: '100%' }]}>
+                            <View style={[styles.legendDot, { 
+                              backgroundColor: item.color,
+                              width: 12,
+                              height: 12,
+                              borderRadius: 6,
+                              marginRight: 10
+                            }]} />
+                            <Text style={[styles.legendText, { 
+                              color: isDarkMode ? '#ffffff' : '#000000',
+                              fontSize: 16,
+                              fontWeight: '600'
+                            }]} numberOfLines={1}>
                               {item.name} ({item.percentage}%)
                             </Text>
                           </View>
-                          <Text style={[styles.legendAmount, { color: item.color, fontSize: 14, fontWeight: '600' }]} numberOfLines={1}>
-                            {userData.currency} {Math.abs(item.amount).toFixed(0)}
+                          <Text style={[styles.legendAmount, { 
+                            color: item.color,
+                            fontSize: 18,
+                            fontWeight: '700',
+                            marginLeft: 22
+                          }]} numberOfLines={1}>
+                            {userData.currency} {Math.abs(item.amount).toLocaleString()}
                           </Text>
                         </View>
                       ))}
@@ -913,48 +1060,115 @@ const HomeScreen = () => {
               </View>
 
               {/* Category Distribution Chart */}
-              <View style={[styles.chartContainer, { backgroundColor: theme.card }]}>
-                <Text style={[styles.chartTitle, { color: theme.text }]}>
+              <View style={[styles.chartContainer, { 
+                backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
+                borderRadius: 12,
+                padding: 16,
+                marginBottom: 16,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                  },
+                  android: {
+                    elevation: 5,
+                  },
+                }),
+              }]}>
+                <Text style={[styles.chartTitle, { 
+                  color: isDarkMode ? '#ffffff' : '#000000',
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  marginBottom: 16,
+                  textAlign: 'center'
+                }]}>
                   Category Distribution
                 </Text>
 
                 {transactions.length === 0 ? (
                   <View style={styles.emptyChart}>
-                    <MaterialCommunityIcons name="chart-pie" size={40} color={theme.subtext} />
-                    <Text style={[styles.emptyText, { color: theme.subtext }]}>
+                    <MaterialCommunityIcons 
+                      name="chart-pie" 
+                      size={40} 
+                      color={isDarkMode ? '#4a4a4a' : '#e0e0e0'} 
+                    />
+                    <Text style={[styles.emptyText, { 
+                      color: isDarkMode ? '#ffffff' : '#000000',
+                      marginTop: 8
+                    }]}>
                       No transactions yet
                     </Text>
                   </View>
                 ) : (
                   <>
-                    <View style={styles.chartWrapper}>
+                    <View style={[styles.chartWrapper, { alignItems: 'center' }]}>
                       <PieChart
                         data={generateCategoryPieChartData()}
-                        width={width - 48}
-                        height={200}
+                        width={width - 32}
+                        height={180}
                         chartConfig={{
-                          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                          labelColor: (opacity = 1) => theme.text,
+                          color: (opacity = 1) => isDarkMode 
+                            ? `rgba(255, 255, 255, ${opacity})`
+                            : `rgba(0, 0, 0, ${opacity})`,
+                          labelColor: (opacity = 1) => isDarkMode 
+                            ? `rgba(255, 255, 255, ${opacity})`
+                            : `rgba(0, 0, 0, ${opacity})`,
+                          style: {
+                            borderRadius: 16
+                          },
+                          propsForLabels: {
+                            fontSize: 16,
+                            fontWeight: 'bold'
+                          }
                         }}
                         accessor="population"
                         backgroundColor="transparent"
                         paddingLeft="0"
+                        absolute
                         hasLegend={false}
-                        center={[width / 4, 0]}
                       />
                     </View>
 
-                    <View style={styles.categoryLegend}>
+                    <View style={[styles.legendContainer, {
+                      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                      borderRadius: 12,
+                      padding: 16,
+                      marginTop: 20
+                    }]}>
                       {generateCategoryPieChartData().map((item, index) => (
-                        <View key={index} style={styles.categoryLegendRow}>
-                          <View style={styles.legendItem}>
-                            <View style={[styles.legendDot, { backgroundColor: item.color, width: 12, height: 12, borderRadius: 6 }]} />
-                            <Text style={[styles.legendText, { color: theme.text, fontSize: 14, fontWeight: '600' }]} numberOfLines={1}>
+                        <View key={index} style={[styles.legendRow, {
+                          borderBottomWidth: index < generateCategoryPieChartData().length - 1 ? 1 : 0,
+                          borderBottomColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                          paddingVertical: 12,
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          gap: 8
+                        }]}>
+                          <View style={[styles.legendItem, { width: '100%' }]}>
+                            <View style={[styles.legendDot, { 
+                              backgroundColor: item.color,
+                              width: 12,
+                              height: 12,
+                              borderRadius: 6,
+                              marginRight: 10
+                            }]} />
+                            <Text style={[styles.legendText, { 
+                              color: isDarkMode ? '#ffffff' : '#000000',
+                              fontSize: 16,
+                              fontWeight: '600'
+                            }]} numberOfLines={1}>
                               {item.name} ({item.percentage}%)
                             </Text>
                           </View>
-                          <Text style={[styles.legendAmount, { color: item.color, fontSize: 14, fontWeight: '600' }]} numberOfLines={1}>
-                            {userData.currency} {Math.abs(item.amount).toFixed(0)}
+                          <Text style={[styles.legendAmount, { 
+                            color: item.color,
+                            fontSize: 18,
+                            fontWeight: '700',
+                            marginLeft: 22
+                          }]} numberOfLines={1}>
+                            {userData.currency} {Math.abs(item.amount).toLocaleString()}
                           </Text>
                         </View>
                       ))}
@@ -1582,24 +1796,28 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
+    gap: 10,
   },
   transactionIcon: {
-    marginRight: 15,
+    marginRight: 10,
   },
   transactionDetails: {
     flex: 1,
+    marginRight: 10,
   },
   transactionCategory: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
-    marginBottom: 5,
+    marginBottom: 4,
+    lineHeight: 20,
   },
   transactionDate: {
-    fontSize: 14,
+    fontSize: 12,
   },
   transactionAmount: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
+    textAlign: 'right',
   },
   addButton: {
     flexDirection: 'row',
@@ -1698,80 +1916,54 @@ const styles = StyleSheet.create({
     flex: 2,
     textAlign: 'right',
   },
-  categoryLegend: {
-    marginTop: 8,
-    paddingHorizontal: 8,
-  },
-  categoryLegendRow: {
+  categoryGrid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.1)',
+    gap: 15,
   },
-  summaryContainer: {
-    padding: 10,
-  },
-  summaryCard: {
+  categoryCard: {
     padding: 15,
     borderRadius: 10,
-    marginBottom: 15,
-    elevation: 2,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-  },
-  summaryItem: {
-    flex: 1,
-    paddingHorizontal: 10,
-  },
-  summaryLabel: {
-    fontSize: 14,
-    marginBottom: 5,
-  },
-  summaryAmount: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 3,
-  },
-  summaryPercentage: {
-    fontSize: 12,
-  },
-  healthIndicators: {
-    marginTop: 15,
-    paddingTop: 15,
-    borderTopWidth: 1,
-  },
-  healthTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
     marginBottom: 10,
-  },
-  healthText: {
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  transactionActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 10,
-    gap: 8,
-  },
-  actionIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 3,
+  },
+  categoryCardText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  subCategoryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 15,
+  },
+  subCategoryCard: {
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  viewMoreButton: {
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
   },
   imageContainer: {
     width: '100%',
@@ -1783,6 +1975,26 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'contain',
+  },
+  chatbotButton: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#6366f1',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    zIndex: 1000,
   },
 });
 

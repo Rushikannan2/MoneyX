@@ -10,6 +10,8 @@ import AchievementsScreen from './screens/AchievementsScreen';
 import StudyGuideScreen from './screens/StudyGuideScreen';
 import InvestScreen from './screens/InvestScreen';
 import OnboardingScreen from './screens/OnboardingScreen';
+import QuizScreen from './screens/QuizScreen';
+import ChatbotScreen from './screens/ChatbotScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -91,6 +93,30 @@ const App = () => {
               name="Invest" 
               component={InvestScreen}
               options={{ headerShown: true }}
+            />
+            <Stack.Screen 
+              name="QuizScreen" 
+              component={QuizScreen}
+              options={{ 
+                title: 'Stock Market Quiz',
+                headerStyle: {
+                  backgroundColor: '#6366f1',
+                },
+                headerTintColor: '#fff',
+                headerShown: true
+              }}
+            />
+            <Stack.Screen 
+              name="Chatbot" 
+              component={ChatbotScreen}
+              options={{ 
+                title: 'AI Stock Assistant',
+                headerStyle: {
+                  backgroundColor: '#6366f1',
+                },
+                headerTintColor: '#fff',
+                headerShown: true
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>

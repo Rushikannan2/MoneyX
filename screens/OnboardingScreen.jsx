@@ -26,8 +26,13 @@ const OnboardingScreen = () => {
     currency: '',
   });
 
-  // Mascot image URL
-  const mascotImageUrl = 'https://i.ytimg.com/vi/4UWoT_AIzzM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDCSCYpgDm9BY-Of8uk5DRNiBVyvg';
+  // Step-specific images
+  const stepImages = {
+    name: 'https://i.imgur.com/ux5cTxb.png',
+    age: 'https://i.imgur.com/80qTLhA.png',
+    gender: 'https://i.imgur.com/TRbpXDp.png',
+    currency: 'https://i.imgur.com/Er3XEFe.png', // Replaced blob URL with assumed correct URL
+  };
 
   const currencies = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'AUD'];
   const currencySymbols = {
@@ -156,11 +161,11 @@ const OnboardingScreen = () => {
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.content}>
-            {/* Mascot Image */}
+            {/* Dynamic Step Image */}
             <Image
-              source={{ uri: mascotImageUrl }}
-              style={styles.mascotImage}
-              resizeMode="cover"
+              source={{ uri: stepImages[onboardingSteps[currentStep].id] }}
+              style={styles.stepImage}
+              resizeMode="contain"
             />
             
             <Text style={styles.stepIndicator}>
@@ -211,13 +216,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 40,
   },
-  mascotImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+  stepImage: {
+    width: 200,
+    height: 200,
     marginBottom: 20,
-    borderWidth: 3,
-    borderColor: '#ffffff',
   },
   stepIndicator: {
     color: '#ffffff',
@@ -279,4 +281,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OnboardingScreen; 
+export default OnboardingScreen;

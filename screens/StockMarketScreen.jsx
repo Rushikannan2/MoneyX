@@ -2,25 +2,33 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../context/ThemeContext';
 
 const StockMarketScreen = () => {
   const navigation = useNavigation();
+  const { theme, isDarkMode } = useTheme();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.header, { 
+        backgroundColor: theme.card,
+        borderBottomColor: theme.border
+      }]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <MaterialIcons name="arrow-back" size={24} color="#333" />
+          <MaterialIcons name="arrow-back" size={24} color={theme.text} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Stock Market</Text>
+        <Text style={[styles.headerText, { color: theme.text }]}>Stock Market</Text>
       </View>
       
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
-          style={styles.button}
+          style={[styles.button, { 
+            backgroundColor: theme.primary,
+            shadowColor: isDarkMode ? '#000000' : '#000000',
+          }]}
           onPress={() => navigation.navigate('StudyGuide')}
         >
           <MaterialIcons name="school" size={32} color="#FFF" />
@@ -29,7 +37,10 @@ const StockMarketScreen = () => {
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={[styles.button, styles.investButton]}
+          style={[styles.button, styles.investButton, { 
+            backgroundColor: theme.secondary || '#2196F3',
+            shadowColor: isDarkMode ? '#000000' : '#000000',
+          }]}
           onPress={() => navigation.navigate('Invest')}
         >
           <MaterialIcons name="trending-up" size={32} color="#FFF" />
@@ -44,15 +55,12 @@ const StockMarketScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
   },
   backButton: {
     marginRight: 15,
@@ -60,7 +68,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
   },
   buttonContainer: {
     flex: 1,
@@ -69,12 +76,10 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   button: {
-    backgroundColor: '#4CAF50',
     padding: 20,
     borderRadius: 12,
     alignItems: 'center',
     elevation: 3,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,

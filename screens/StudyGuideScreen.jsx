@@ -2,9 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../context/ThemeContext';
 
 const StudyGuideScreen = () => {
   const navigation = useNavigation();
+  const { theme, isDarkMode } = useTheme();
   
   const sections = [
     {
@@ -40,25 +42,31 @@ const StudyGuideScreen = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.header, { 
+        backgroundColor: theme.card,
+        borderBottomColor: theme.border
+      }]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <MaterialIcons name="arrow-back" size={24} color="#333" />
+          <MaterialIcons name="arrow-back" size={24} color={theme.text} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Stock Market Guide</Text>
+        <Text style={[styles.headerText, { color: theme.text }]}>Stock Market Guide</Text>
       </View>
 
       <ScrollView style={styles.scrollView}>
         {sections.map((section, index) => (
-          <View key={index} style={styles.section}>
+          <View key={index} style={[styles.section, { 
+            backgroundColor: theme.card,
+            shadowColor: isDarkMode ? '#000000' : '#000000'
+          }]}>
             <View style={styles.sectionHeader}>
-              <MaterialIcons name={section.icon} size={24} color="#333" />
-              <Text style={styles.sectionTitle}>{section.title}</Text>
+              <MaterialIcons name={section.icon} size={24} color={theme.text} />
+              <Text style={[styles.sectionTitle, { color: theme.text }]}>{section.title}</Text>
             </View>
-            <Text style={styles.content}>{section.content}</Text>
+            <Text style={[styles.content, { color: theme.subtext }]}>{section.content}</Text>
           </View>
         ))}
       </ScrollView>
@@ -69,15 +77,12 @@ const StudyGuideScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
   },
   backButton: {
     marginRight: 15,
@@ -85,18 +90,15 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
   },
   scrollView: {
     flex: 1,
   },
   section: {
-    backgroundColor: '#FFFFFF',
     margin: 10,
     padding: 15,
     borderRadius: 10,
     elevation: 2,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
@@ -110,11 +112,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
-    color: '#333',
   },
   content: {
     fontSize: 16,
-    color: '#666',
     lineHeight: 24,
   },
 });

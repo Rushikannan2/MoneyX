@@ -11,9 +11,11 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../context/ThemeContext';
 
 const InvestScreen = () => {
   const navigation = useNavigation();
+  const { theme, isDarkMode } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -79,21 +81,24 @@ const InvestScreen = () => {
   });
 
   const renderStockItem = ({ item }) => (
-    <View style={styles.stockItem}>
+    <View style={[styles.stockItem, { 
+      backgroundColor: theme.card,
+      shadowColor: isDarkMode ? '#000000' : '#000000'
+    }]}>
       <View style={styles.stockInfo}>
-        <Text style={styles.stockSymbol}>{item.symbol}</Text>
-        <Text style={styles.stockName}>{item.name}</Text>
-        <Text style={styles.stockCategory}>{item.category}</Text>
+        <Text style={[styles.stockSymbol, { color: theme.text }]}>{item.symbol}</Text>
+        <Text style={[styles.stockName, { color: theme.subtext }]}>{item.name}</Text>
+        <Text style={[styles.stockCategory, { color: theme.subtext }]}>{item.category}</Text>
       </View>
       <View style={styles.stockPriceContainer}>
-        <Text style={styles.stockPrice}>${item.price.toFixed(2)}</Text>
+        <Text style={[styles.stockPrice, { color: theme.text }]}>${item.price.toFixed(2)}</Text>
         <Text style={[
           styles.stockChange,
           { color: item.change >= 0 ? '#4CAF50' : '#F44336' }
         ]}>
           {item.change >= 0 ? '+' : ''}{item.change.toFixed(2)}%
         </Text>
-        <TouchableOpacity style={styles.selectButton}>
+        <TouchableOpacity style={[styles.selectButton, { backgroundColor: theme.primary }]}>
           <Text style={styles.selectButtonText}>Select</Text>
         </TouchableOpacity>
       </View>
@@ -101,22 +106,29 @@ const InvestScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.header, { 
+        backgroundColor: theme.card,
+        borderBottomColor: theme.border
+      }]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <MaterialIcons name="arrow-back" size={24} color="#333" />
+          <MaterialIcons name="arrow-back" size={24} color={theme.text} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Invest</Text>
+        <Text style={[styles.headerText, { color: theme.text }]}>Invest</Text>
       </View>
 
-      <View style={styles.searchContainer}>
-        <MaterialIcons name="search" size={24} color="#666" />
+      <View style={[styles.searchContainer, { 
+        backgroundColor: theme.card,
+        shadowColor: isDarkMode ? '#000000' : '#000000'
+      }]}>
+        <MaterialIcons name="search" size={24} color={theme.subtext} />
         <TextInput
-          style={styles.searchInput}
+          style={[styles.searchInput, { color: theme.text }]}
           placeholder="Search stocks..."
+          placeholderTextColor={theme.subtext}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
@@ -132,13 +144,16 @@ const InvestScreen = () => {
             key={category}
             style={[
               styles.categoryButton,
-              selectedCategory === category && styles.selectedCategory,
+              { 
+                backgroundColor: selectedCategory === category ? theme.primary : theme.card,
+                shadowColor: isDarkMode ? '#000000' : '#000000'
+              },
             ]}
             onPress={() => setSelectedCategory(category)}
           >
             <Text style={[
               styles.categoryText,
-              selectedCategory === category && styles.selectedCategoryText,
+              { color: selectedCategory === category ? '#FFFFFF' : theme.text },
             ]}>
               {category}
             </Text>
@@ -159,15 +174,12 @@ const InvestScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
   },
   backButton: {
     marginRight: 15,
@@ -175,12 +187,10 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
     margin: 10,
     padding: 10,
     borderRadius: 10,
@@ -200,18 +210,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginRight: 10,
     borderRadius: 20,
-    backgroundColor: '#FFFFFF',
     elevation: 2,
-  },
-  selectedCategory: {
-    backgroundColor: '#2196F3',
   },
   categoryText: {
     fontSize: 16,
-    color: '#666',
-  },
-  selectedCategoryText: {
-    color: '#FFFFFF',
   },
   stockList: {
     flex: 1,
@@ -219,7 +221,6 @@ const styles = StyleSheet.create({
   stockItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
     margin: 10,
     padding: 15,
     borderRadius: 10,
@@ -231,16 +232,13 @@ const styles = StyleSheet.create({
   stockSymbol: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   stockName: {
     fontSize: 14,
-    color: '#666',
     marginTop: 4,
   },
   stockCategory: {
     fontSize: 12,
-    color: '#888',
     marginTop: 4,
   },
   stockPriceContainer: {
@@ -249,22 +247,20 @@ const styles = StyleSheet.create({
   stockPrice: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   stockChange: {
     fontSize: 14,
     marginTop: 4,
   },
   selectButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    borderRadius: 15,
     marginTop: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
   selectButtonText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });
